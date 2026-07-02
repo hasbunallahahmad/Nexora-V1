@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Calendar\DTO\CalendarQuery;
+use App\Calendar\Enums\CalendarAudience;
+use App\Calendar\Services\CalendarAggregationService;
 use App\Http\Requests\KalenderFeedRequest;
 use App\Http\Resources\AgendaCalendarResource;
 use App\Http\Resources\AgendaDetailResource;
@@ -14,28 +17,20 @@ use Illuminate\Support\Facades\View;
 
 class AgendaController extends Controller
 {
+    public function __construct(
+        private readonly CalendarAggregationService $calendar,
+    ) {}
+
     public function index()
     {
-        $hariIni = Agenda::published()
-            ->hariIni()
-            ->with('bidang')
-            ->get();
-
-        $mendatang = Agenda::published()
-            ->mendatang()
-            ->with('bidang')
-            ->take(9)
-            ->get();
+        $hariIni = Agenda::published()->hariIni()->with('bidang')->get();
+        $mendatang = Agenda::published()->mendatang()->with('bidang')->take(9)->get();
 
         $stats = Cache::remember('agenda_stats', 60, fn() => [
             'hari_ini'   => Agenda::published()->hariIni()->count('*'),
             'mendatang'  => Agenda::published()->mendatang()->count('*'),
             'minggu_ini' => Agenda::published()->mingguIni()->count('*'),
         ]);
-
-        $lastModified = Agenda::published()
-            ->whereIn('id', $hariIni->pluck('id')->merge($mendatang->pluck('id')))
-            ->max('updated_at');
 
         return view('landing', compact('hariIni', 'mendatang', 'stats'));
     }
@@ -46,19 +41,11 @@ class AgendaController extends Controller
         $hariIni   = Agenda::published()->hariIni()->with('bidang')->get();
         $mendatang = Agenda::published()->mendatang()->with('bidang')->take(9)->get();
 
-        // Clear cache untuk invalidate kalender
-        Cache::forget('agenda_stats');
-
-        // Increment cache version untuk force kalender reload
-        // Ini membuat cache key kalender menjadi invalid, sehingga API akan fetch data baru
-        $currentVersion = Cache::get('kalender_cache_version', 0);
-        Cache::put('kalender_cache_version', $currentVersion + 1, now()->addHours(24));
-
-        $stats = [
+        $stats = Cache::remember('agenda_stats', 60, fn() => [
             'hari_ini'   => Agenda::published()->hariIni()->count('*'),
             'mendatang'  => Agenda::published()->mendatang()->count('*'),
             'minggu_ini' => Agenda::published()->mingguIni()->count('*'),
-        ];
+        ]);
 
         return response()->json([
             'stats'          => $stats,
@@ -75,24 +62,23 @@ class AgendaController extends Controller
     {
         ['start' => $start, 'end' => $end] = $request->parsed();
 
-        $version  = Cache::get('kalender_cache_version', 0);
-        $cacheKey = 'kalender_'
-            . $start->toDateString() . '_'
-            . $end->toDateString()
-            . '_v' . $version;
-
         Log::info('Kalender Feed Request', [
-            'start'     => $start->toDateTimeString(),
-            'end'       => $end->toDateTimeString(),
+            'start' => $start->toDateTimeString(),
+            'end'   => $end->toDateTimeString(),
         ]);
-        $events = Cache::remember($cacheKey, now()->addHours(24), function () use ($start, $end) {
-            return Agenda::published()
-                ->betweenDates($start->toDateString(), $end->toDateString())
-                ->with('bidang')
-                ->get()
-                ->map(fn(Agenda $a) => AgendaCalendarResource::make($a)->resolve())
-                ->values();
-        });
+
+        $query = new CalendarQuery($start, $end, CalendarAudience::Public);
+
+        $events = $this->calendar->getEvents($query)->map(fn($event) => [
+            'id'              => $event->id,
+            'title'           => $event->title,
+            'start'           => $event->start->toDateString(),
+            'end'             => $event->end?->copy()->addDay()->toDateString(),
+            'backgroundColor' => $event->backgroundColor,
+            'borderColor'     => 'transparent',
+            'textColor'       => '#ffffff',
+            'extendedProps'   => $event->extendedProps,
+        ])->values();
 
         return response()->json($events)
             ->header('X-Content-Type-Options', 'nosniff')
@@ -111,9 +97,7 @@ class AgendaController extends Controller
             return response()->json(['error' => 'ID tidak valid.'], 422);
         }
 
-        $agenda = Agenda::published()
-            ->with('bidang')
-            ->findOrFail($id);
+        $agenda = Agenda::published()->with('bidang')->findOrFail($id);
 
         return response()
             ->json(AgendaDetailResource::make($agenda))

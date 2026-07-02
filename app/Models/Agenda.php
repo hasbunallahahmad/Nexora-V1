@@ -45,32 +45,19 @@ class Agenda extends Model
                 $agenda->slug = Str::slug($agenda->judul_agenda);
             }
         });
-
-        // Invalidate caches saat create, update, atau delete
-        static::created(function () {
-            self::invalidateCaches();
-        });
-
-        static::updated(function () {
-            self::invalidateCaches();
-        });
-
-        static::deleted(function () {
-            self::invalidateCaches();
-        });
     }
 
     /**
      * Invalidate agenda-related caches to ensure fresh data
      */
-    private static function invalidateCaches(): void
-    {
-        \Illuminate\Support\Facades\Cache::forget('agenda_stats');
+    // private static function invalidateCaches(): void
+    // {
+    //     \Illuminate\Support\Facades\Cache::forget('agenda_stats');
 
-        // Increment kalender cache version untuk force refetch
-        $currentVersion = \Illuminate\Support\Facades\Cache::get('kalender_cache_version', 0);
-        \Illuminate\Support\Facades\Cache::put('kalender_cache_version', $currentVersion + 1, now()->addHours(24));
-    }
+    //     // Increment kalender cache version untuk force refetch
+    //     $currentVersion = \Illuminate\Support\Facades\Cache::get('kalender_cache_version', 0);
+    //     \Illuminate\Support\Facades\Cache::put('kalender_cache_version', $currentVersion + 1, now()->addHours(24));
+    // }
     // ══════════════════════════════════════════════════════════════════
     // log aktivitas user
     // supaya audit trail lebih lengkap (misal: siapa yang buat/edit agenda)

@@ -15,7 +15,9 @@ use Illuminate\Database\Eloquent\Model;
 use Saade\FilamentFullCalendar\Actions;
 use Saade\FilamentFullCalendar\Actions\CreateAction;
 use Saade\FilamentFullCalendar\Widgets\FullCalendarWidget;
-
+use App\Calendar\DTO\CalendarQuery;
+use App\Calendar\Enums\CalendarAudience;
+use App\Calendar\Services\CalendarAggregationService;
 
 class CalendarWidget extends FullCalendarWidget
 {
@@ -118,27 +120,43 @@ class CalendarWidget extends FullCalendarWidget
 
     public function fetchEvents(array $info): array
     {
-        return Agenda::query()
-            ->where('start_date', '>=', $info['start'], 'and')
-            ->where('start_date', '<=', $info['end'], 'and')
-            ->get()
-            ->map(
-                fn(Agenda $event) => [
-                    'id' => $event->id,
-                    'title' => strip_tags($event->judul_agenda),
-                    'start' => $event->start_date,
-                    'end' => $event->end_date,
-                    'extendedProps' => [
-                        'description' => strip_tags($event->deskripsi),
-                        'location'    => strip_tags($event->location),
-                        'bidang' => $event->bidang()->pluck('nama_bidang')->implode(', '),
-                        'start_date' => Carbon::parse($event->start_date)->setTimezone('Asia/Jakarta')->format('Y-m-d H:i'),
-                        'end_date'    => $event->end_date
-                            ? Carbon::parse($event->end_date)->setTimezone('Asia/Jakarta')->format('Y-m-d H:i')
-                            : null,
-                    ],
-                ]
-            )
+        // return Agenda::query()
+        //     ->where('start_date', '>=', $info['start'], 'and')
+        //     ->where('start_date', '<=', $info['end'], 'and')
+        //     ->get()
+        //     ->map(
+        //         fn(Agenda $event) => [
+        //             'id' => $event->id,
+        //             'title' => strip_tags($event->judul_agenda),
+        //             'start' => $event->start_date,
+        //             'end' => $event->end_date,
+        //             'extendedProps' => [
+        //                 'description' => strip_tags($event->deskripsi),
+        //                 'location'    => strip_tags($event->location),
+        //                 'bidang' => $event->bidang()->pluck('nama_bidang')->implode(', '),
+        //                 'start_date' => Carbon::parse($event->start_date)->setTimezone('Asia/Jakarta')->format('Y-m-d H:i'),
+        //                 'end_date'    => $event->end_date
+        //                     ? Carbon::parse($event->end_date)->setTimezone('Asia/Jakarta')->format('Y-m-d H:i')
+        //                     : null,
+        //             ],
+        //         ]
+        //     )
+        //     ->toArray();
+        $query = new CalendarQuery(
+            start: Carbon::parse($info['start']),
+            end: Carbon::parse($info['end']),
+            audience: CalendarAudience::Admin,
+        );
+
+        return app(CalendarAggregationService::class)
+            ->getEvents($query)
+            ->map(fn($event) => [
+                'id'            => $event->id,
+                'title'         => $event->title,
+                'start'         => $event->start,
+                'end'           => $event->end,
+                'extendedProps' => $event->extendedProps,
+            ])
             ->toArray();
     }
 

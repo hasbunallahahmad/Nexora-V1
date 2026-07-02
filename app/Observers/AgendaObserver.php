@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Calendar\Events\CalendarSourceChanged;
 use App\Models\Agenda;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -10,27 +11,34 @@ class AgendaObserver
 {
     public function created(Agenda $agenda): void
     {
-        $this->clearCache($agenda);
+        $this->syncCalendar($agenda);
     }
 
     public function updated(Agenda $agenda): void
     {
-        $this->clearCache($agenda);
+        $this->syncCalendar($agenda);
     }
 
     public function deleted(Agenda $agenda): void
     {
-        $this->clearCache($agenda);
+        $this->syncCalendar($agenda);
     }
 
     public function restored(Agenda $agenda): void
     {
-        $this->clearCache($agenda);
+        $this->syncCalendar($agenda);
     }
 
     public function forceDeleted(Agenda $agenda): void
     {
-        $this->clearCache($agenda);
+        $this->syncCalendar($agenda);
+    }
+
+    private function syncCalendar(Agenda $agenda): void
+    {
+        Cache::forget('agenda_stats');
+
+        event(new CalendarSourceChanged('agenda'));
     }
 
     private function clearCache(Agenda $agenda): void

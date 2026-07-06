@@ -10,6 +10,7 @@ use App\Calendar\Listeners\InvalidateCalendarCache;
 use App\Calendar\Services\CalendarAggregationService;
 use App\Calendar\Services\CalendarCacheService;
 use App\Calendar\Services\Sources\ActivityEventSource;
+use App\Facility\Services\Sources\RoomReservationEventSource;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 
@@ -21,9 +22,7 @@ final class CalendarServiceProvider extends ServiceProvider
 
         $this->app->tag([
             ActivityEventSource::class,
-            // Facility\Services\Sources\RoomReservationEventSource::class akan
-            // didaftarkan di sini saat modul Facility dibangun — tanpa
-            // mengubah CalendarAggregationService sama sekali.
+            RoomReservationEventSource::class,
         ], CalendarEventSource::class);
 
         $this->app->singleton(CalendarAggregationService::class, fn($app) => new CalendarAggregationService(

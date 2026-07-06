@@ -6,9 +6,10 @@ namespace App\Facility\Actions;
 
 use App\Facility\DTO\RejectReservationData;
 use App\Facility\Enums\ReservationStatus;
+use App\Facility\Events\ReservationRejected;
 use App\Facility\Exceptions\InvalidReservationTransitionException;
+use App\Facility\Models\RoomReservation;
 use App\Facility\Repositories\RoomReservationRepository;
-use App\Models\Facility\Models\RoomReservation;
 
 final class RejectReservationAction
 {
@@ -26,9 +27,13 @@ final class RejectReservationAction
             );
         }
 
-        return $this->reservations->updateStatus($reservation, [
+        $reservation = $this->reservations->updateStatus($reservation, [
             'status'          => ReservationStatus::Rejected,
             'rejected_reason' => $data->reason,
         ]);
+
+        event(new ReservationRejected($reservation));
+
+        return $reservation;
     }
 }

@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace App\Facility\Actions;
 
 use App\Facility\Enums\ReservationStatus;
+use App\Facility\Events\ReservationCancelled;
 use App\Facility\Exceptions\InvalidReservationTransitionException;
+use App\Facility\Models\RoomReservation;
 use App\Facility\Repositories\RoomReservationRepository;
-use App\Models\Facility\Models\RoomReservation;
 
 final class CancelReservationAction
 {
@@ -25,9 +26,13 @@ final class CancelReservationAction
             );
         }
 
-        return $this->reservations->updateStatus($reservation, [
+        $reservation = $this->reservations->updateStatus($reservation, [
             'status'       => ReservationStatus::Cancelled,
             'cancelled_at' => now(),
         ]);
+
+        event(new ReservationCancelled($reservation));
+
+        return $reservation;
     }
 }

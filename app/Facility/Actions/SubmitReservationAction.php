@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace App\Facility\Actions;
 
 use App\Facility\Enums\ReservationStatus;
+use App\Facility\Events\ReservationSubmitted;
 use App\Facility\Exceptions\InvalidReservationTransitionException;
 use App\Facility\Exceptions\ReservationConflictException;
 use App\Facility\Exceptions\RoomNotReservableException;
+use App\Facility\Models\RoomReservation;
 use App\Facility\Repositories\RoomRepository;
 use App\Facility\Repositories\RoomReservationRepository;
-use App\Facility\Models\RoomReservation;
 use App\Shared\DTO\DateRange;
 use App\Shared\Services\ConflictDetectionService;
 use Illuminate\Support\Facades\DB;
@@ -25,7 +26,7 @@ final class SubmitReservationAction
 
     public function execute(int $reservationId): RoomReservation
     {
-        return DB::transaction(function () use ($reservationId): RoomReservation {
+        $reservation = DB::transaction(function () use ($reservationId): RoomReservation {
             $reservation = $this->reservations->findOrFail($reservationId);
 
             if (! $reservation->status->canTransitionTo(ReservationStatus::Submitted)) {
@@ -34,8 +35,6 @@ final class SubmitReservationAction
                 );
             }
 
-            // Mutex: kunci baris Room agar submit lain untuk ruangan yang
-            // sama harus antre sampai transaksi ini selesai.
             $room = $this->rooms->lockForReservation($reservation->room_id);
 
             if (! $room->status->isReservable()) {
@@ -57,5 +56,9 @@ final class SubmitReservationAction
                 'status' => ReservationStatus::Submitted,
             ]);
         });
+
+        event(new ReservationSubmitted($reservation));
+
+        return $reservation;
     }
 }

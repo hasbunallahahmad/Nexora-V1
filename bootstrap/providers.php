@@ -5,4 +5,5 @@ return [
     App\Providers\Filament\AdminPanelProvider::class,
     App\Providers\ServiceLayerProvider::class,
     App\Calendar\Providers\CalendarServiceProvider::class,
+    App\Facility\Providers\FacilityServiceProvider::class,
 ];

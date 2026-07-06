@@ -5,6 +5,7 @@ namespace App\Providers\Filament;
 
 use AchyutN\FilamentLogViewer\FilamentLogViewer;
 use AlizHarb\ActivityLog\ActivityLogPlugin;
+use App\Facility\Filament\Resources\Rooms\RoomResource;
 use App\Helpers\PexelsHelper;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Caresome\FilamentAuthDesigner\AuthDesignerPlugin;
@@ -33,10 +34,10 @@ use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
 use Joaopaulolndev\FilamentEditProfile\Pages\EditProfilePage;
 use Saade\FilamentFullCalendar\FilamentFullCalendarPlugin;
 use Sanzgrapher\DraggableModal\DraggableModalPlugin;
-use Spatie\Activitylog\Facades\Activity;
 use SpyApp\ThemeAberdeen\ThemeAberdeenPlugin;
 use Tapp\FilamentAuthenticationLog\FilamentAuthenticationLogPlugin;
 use WatheqAlshowaiter\FilamentStickyTableHeader\StickyTableHeaderPlugin;
+use App\Facility\Filament\Resources\RoomReservations\RoomReservationResource;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -68,6 +69,10 @@ class AdminPanelProvider extends PanelProvider
             ->maxContentWidth(Width::Full)
             ->spa()
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
+            ->resources([
+                RoomResource::class,
+                RoomReservationResource::class,
+            ])
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
                 Dashboard::class,

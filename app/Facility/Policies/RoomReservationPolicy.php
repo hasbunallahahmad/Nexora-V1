@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Facility\Policies;
 
-use App\Facility\Enums\ReservationStatus;
+use App\Shared\Enums\ReservationStatus;
 use App\Facility\Models\RoomReservation;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;

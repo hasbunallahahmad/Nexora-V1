@@ -6,15 +6,10 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class FacilityPermissionSeeder extends Seeder
 {
-    /**
-     * Permission non-CRUD yang tidak otomatis dibuat oleh Filament Shield
-     * `shield:generate` (yang hanya cover ability standar Policy).
-     * CRUD permission (ViewAny:Room, Create:RoomReservation, dst) tetap
-     * dibuat via `php artisan shield:generate` di Fase 5 (bersama Resource).
-     */
     public function run(): void
     {
         $customPermissions = [
@@ -28,6 +23,12 @@ class FacilityPermissionSeeder extends Seeder
                 'name'       => $permission,
                 'guard_name' => 'web',
             ]);
+        }
+
+        $superAdmin = Role::where('name', 'super_admin')->first();
+
+        if ($superAdmin) {
+            $superAdmin->givePermissionTo($customPermissions);
         }
     }
 }

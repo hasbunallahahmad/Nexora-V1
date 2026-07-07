@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Facility\Actions;
 
 use App\Facility\DTO\CreateRoomReservationData;
-use App\Facility\Enums\ReservationStatus;
+use App\Shared\Enums\ReservationStatus;
+use App\Facility\Models\RoomReservation;
 use App\Facility\Repositories\RoomReservationRepository;
-use App\Models\Facility\Models\RoomReservation;
 use InvalidArgumentException;
 
 final class CreateDraftReservationAction
@@ -22,6 +22,10 @@ final class CreateDraftReservationAction
             throw new InvalidArgumentException('Tanggal mulai harus sebelum tanggal selesai.');
         }
 
+        if ($data->requestedBy === null && empty($data->guestName)) {
+            throw new InvalidArgumentException('Identitas pemohon wajib diisi (akun pengguna atau nama tamu).');
+        }
+
         return $this->reservations->create([
             'room_id'        => $data->roomId,
             'agenda_id'      => $data->agendaId,
@@ -31,6 +35,9 @@ final class CreateDraftReservationAction
             'start_datetime' => $data->startDatetime,
             'end_datetime'   => $data->endDatetime,
             'notes'          => $data->notes,
+            'guest_name'     => $data->guestName,
+            'guest_contact'  => $data->guestContact,
+            'guest_instansi' => $data->guestInstansi,
             'status'         => ReservationStatus::Draft,
         ]);
     }

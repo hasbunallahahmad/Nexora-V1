@@ -11,11 +11,14 @@ final readonly class CreateRoomReservationData
     public function __construct(
         public int $roomId,
         public ?int $agendaId,
-        public int $requestedBy,
+        public ?int $requestedBy,
         public string $title,
         public ?string $purpose,
         public CarbonInterface $startDatetime,
         public CarbonInterface $endDatetime,
         public ?string $notes = null,
+        public ?string $guestName = null,
+        public ?string $guestContact = null,
+        public ?string $guestInstansi = null,
     ) {}
 }

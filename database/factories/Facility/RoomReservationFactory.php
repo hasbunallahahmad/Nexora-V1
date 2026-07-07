@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories\Facility;
 
-use App\Facility\Enums\ReservationStatus;
+use App\Shared\Enums\ReservationStatus;
 use App\Facility\Models\Room;
 use App\Facility\Models\RoomReservation;
 use App\Models\User;

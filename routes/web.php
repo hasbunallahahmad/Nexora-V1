@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AgendaController;
+use App\Http\Controllers\PublicRoomReservationController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [AgendaController::class, 'index'])->name('landing');
@@ -27,3 +28,14 @@ Route::prefix('api/agenda')
             ->where('id', '[0-9]+')
             ->name('api.agenda.show');
     });
+
+Route::get('/reservasi-ruangan', [PublicRoomReservationController::class, 'index'])
+    ->name('room-reservation.index');
+
+Route::post('/reservasi-ruangan', [PublicRoomReservationController::class, 'store'])
+    ->middleware('throttle:reservasi-publik')
+    ->name('room-reservation.store');
+
+Route::get('/api/room-reservation/kalender', [PublicRoomReservationController::class, 'kalenderFeed'])
+    ->middleware('throttle:api-publik')
+    ->name('api.room-reservation.kalender');

@@ -34,6 +34,11 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for('api-publik', function (Request $request) {
             return Limit::perMinute(60)->by($request->ip());
         });
+
+        RateLimiter::for('reservasi-publik', function (Request $request) {
+            return Limit::perMinute(5)->by($request->ip());
+        });
+
         Carbon::setLocale('id');
         Agenda::observe(AgendaObserver::class);
 

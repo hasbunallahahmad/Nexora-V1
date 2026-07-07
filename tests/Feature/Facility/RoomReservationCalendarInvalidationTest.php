@@ -1,7 +1,7 @@
 <?php
 
 use App\Calendar\Events\CalendarSourceChanged;
-use App\Facility\Enums\ReservationStatus;
+use App\Shared\Enums\ReservationStatus;
 use App\Facility\Models\Room;
 use App\Facility\Models\RoomReservation;
 use App\Facility\Services\RoomReservationService;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Facility\Actions;
 
-use App\Facility\Enums\ReservationStatus;
+use App\Shared\Enums\ReservationStatus;
 use App\Facility\Events\ReservationCancelled;
 use App\Facility\Exceptions\InvalidReservationTransitionException;
 use App\Facility\Models\RoomReservation;

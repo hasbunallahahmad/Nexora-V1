@@ -2,7 +2,7 @@
 
 use App\Facility\DTO\ApproveReservationData;
 use App\Facility\DTO\RejectReservationData;
-use App\Facility\Enums\ReservationStatus;
+use App\Shared\Enums\ReservationStatus;
 use App\Facility\Events\ReservationApproved;
 use App\Facility\Events\ReservationCancelled;
 use App\Facility\Events\ReservationRejected;

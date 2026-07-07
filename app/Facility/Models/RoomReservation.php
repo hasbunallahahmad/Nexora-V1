@@ -31,10 +31,13 @@ class RoomReservation extends Model
         'approved_at',
         'cancelled_at',
         'notes',
+        'guest_name',
+        'guest_contact',
+        'guest_instansi',
     ];
 
     protected $casts = [
-        'status' => \App\Facility\Enums\ReservationStatus::class,
+        'status' => \App\Shared\Enums\ReservationStatus::class,
         'start_datetime' => 'datetime',
         'end_datetime' => 'datetime',
         'approved_at' => 'datetime',

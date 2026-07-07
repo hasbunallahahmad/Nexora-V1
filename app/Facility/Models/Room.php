@@ -6,6 +6,7 @@ namespace App\Facility\Models;
 
 use App\Facility\Enums\RoomStatus;
 use App\Facility\Models\RoomReservation;
+use App\Shared\Enums\ReservationStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -63,7 +64,7 @@ class Room extends Model
     {
         return $this->reservations()->whereIn(
             'status',
-            array_map(fn($s) => $s->value, \App\Facility\Enums\ReservationStatus::occupyingStatuses())
+            array_map(fn($s) => $s->value, ReservationStatus::occupyingStatuses())
         );
     }
 

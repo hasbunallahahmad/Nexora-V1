@@ -1,7 +1,7 @@
 <?php
 
 use App\Facility\DTO\ApproveReservationData;
-use App\Facility\Enums\ReservationStatus;
+use App\Shared\Enums\ReservationStatus;
 use App\Facility\Enums\RoomStatus;
 use App\Facility\Exceptions\ReservationConflictException;
 use App\Facility\Exceptions\RoomNotReservableException;

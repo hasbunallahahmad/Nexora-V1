@@ -52,7 +52,8 @@ final class FacilityServiceProvider extends ServiceProvider
             Event::listen($event, DispatchCalendarSourceChanged::class);
         }
 
-        Event::listen(ReservationSubmitted::class, LogReservationSubmitted::class);
+        // Event::listen(ReservationSubmitted::class, LogReservationSubmitted::class);
+        Event::listen(ReservationSubmitted::class, \App\Facility\Listeners\NotifyApproversOnSubmission::class);
         Event::listen(ReservationApproved::class, LogReservationDecision::class);
         Event::listen(ReservationRejected::class, LogReservationDecision::class);
     }

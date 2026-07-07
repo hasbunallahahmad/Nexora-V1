@@ -1,6 +1,6 @@
 <?php
 
-use App\Facility\Enums\ReservationStatus;
+use App\Shared\Enums\ReservationStatus;
 use App\Facility\Repositories\RoomReservationRepository;
 use App\Facility\Models\Room;
 use App\Facility\Models\RoomReservation;

@@ -8,7 +8,7 @@ use App\Calendar\Contracts\CalendarEventSource;
 use App\Calendar\DTO\CalendarEventData;
 use App\Calendar\DTO\CalendarQuery;
 use App\Calendar\Enums\CalendarAudience;
-use App\Facility\Enums\ReservationStatus;
+use App\Shared\Enums\ReservationStatus;
 use App\Facility\Models\RoomReservation;
 use Illuminate\Support\Collection;
 

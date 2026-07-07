@@ -2,7 +2,7 @@
 
 use App\Calendar\DTO\CalendarQuery;
 use App\Calendar\Enums\CalendarAudience;
-use App\Facility\Enums\ReservationStatus;
+use App\Shared\Enums\ReservationStatus;
 use App\Facility\Models\Room;
 use App\Facility\Models\RoomReservation;
 use App\Facility\Services\Sources\RoomReservationEventSource;

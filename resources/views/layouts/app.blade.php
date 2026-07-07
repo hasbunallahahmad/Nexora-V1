@@ -47,7 +47,7 @@
             </a>
 
             <nav class="app-header__nav" aria-label="Navigasi utama" style="display:flex;align-items:center;gap:1rem;">
-                @foreach ([['#', 'Beranda'], ['#agenda-hari-ini', 'Hari Ini'], ['#agenda-mendatang', 'Mendatang'], ['#kalender', 'Kalender']] as [$href, $label])
+                @foreach ([['#', 'Beranda'], ['#agenda-hari-ini', 'Hari Ini'], ['#agenda-mendatang', 'Mendatang'], ['#kalender', 'Kalender'], [route('room-reservation.index'), 'Reservasi Ruangan']] as [$href, $label])
                     <a href="{{ $href }}"
                         class="nav-link text-sm font-medium focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-1">
                         {{ $label }}

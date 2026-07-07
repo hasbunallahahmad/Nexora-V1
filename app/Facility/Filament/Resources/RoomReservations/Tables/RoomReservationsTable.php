@@ -6,7 +6,7 @@ namespace App\Facility\Filament\Resources\RoomReservations\Tables;
 
 use App\Facility\DTO\ApproveReservationData;
 use App\Facility\DTO\RejectReservationData;
-use App\Facility\Enums\ReservationStatus;
+use App\Shared\Enums\ReservationStatus;
 use App\Facility\Exceptions\InvalidReservationTransitionException;
 use App\Facility\Exceptions\ReservationConflictException;
 use App\Facility\Exceptions\RoomNotReservableException;
@@ -38,7 +38,17 @@ class RoomReservationsTable
             ->columns([
                 TextColumn::make('title')->label('Judul')->searchable()->wrap(),
                 TextColumn::make('room.name')->label('Ruangan')->sortable(),
-                TextColumn::make('requestedBy.name')->label('Diajukan Oleh'),
+                TextColumn::make('requested_by_display')
+                    ->label('Diajukan Oleh')
+                    ->getStateUsing(function (RoomReservation $record): string {
+                        if ($record->requestedBy) {
+                            return $record->requestedBy->name;
+                        }
+
+                        $instansi = $record->guest_instansi ?: 'Masyarakat Umum';
+
+                        return "{$record->guest_name} ({$instansi})";
+                    }),
                 TextColumn::make('start_datetime')->label('Mulai')->dateTime('d M Y H:i')->sortable(),
                 TextColumn::make('end_datetime')->label('Selesai')->dateTime('d M Y H:i')->sortable(),
                 TextColumn::make('status')

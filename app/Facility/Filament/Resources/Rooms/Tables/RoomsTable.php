@@ -6,7 +6,6 @@ namespace App\Facility\Filament\Resources\Rooms\Tables;
 
 use App\Facility\Enums\RoomStatus;
 use Filament\Actions\BulkActionGroup;
-use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -20,6 +19,10 @@ class RoomsTable
     {
         return $table
             ->query(\App\Facility\Models\Room::query()->withCount('occupyingReservations'))
+            ->heading('Daftar Ruangan')
+            ->description(
+                'Tabel ini menampilkan daftar ruangan yang terdaftar dalam sistem.'
+            )
             ->deferLoading()
             ->paginated(['10', '25', '50'])
             ->columns([
@@ -48,7 +51,7 @@ class RoomsTable
                 DeleteAction::make(),
             ])
             ->toolbarActions([
-                CreateAction::make(),
+                // CreateAction::make(),
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

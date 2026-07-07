@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Facility\Enums;
+namespace App\Shared\Enums;
 
 enum ReservationStatus: string
 {

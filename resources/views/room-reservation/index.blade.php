@@ -128,10 +128,12 @@
 
                     <div class="grid sm:grid-cols-2 gap-4">
                         <div>
-                            <label class="text-xs text-white mb-1 block">Kontak WhatsApp/Email</label>
-                            <input type="text" name="guest_contact" value="{{ old('guest_contact') }}" required
-                                maxlength="150" class="w-full rounded-lg p-2.5 text-sm"
-                                style="background:rgba(255,255,255,0.9);">
+                            <label class="text-xs text-white mb-1 block">Nomor WhatsApp</label>
+                            <input type="tel" name="guest_contact" value="{{ old('guest_contact') }}" required
+                                inputmode="numeric" pattern="[0-9]*" minlength="9" maxlength="15"
+                                placeholder="08xxxxxxxxxx" class="w-full rounded-lg p-2.5 text-sm"
+                                style="background:rgba(255,255,255,0.9);"
+                                oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                             @error('guest_contact')
                                 <p class="text-xs mt-1" style="color:#f5b7b1;">{{ $message }}</p>
                             @enderror

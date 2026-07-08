@@ -152,18 +152,72 @@ document.addEventListener("DOMContentLoaded", () => {
             ?.classList.add("active");
     };
 
+    // links.forEach((link) => {
+    //     link.addEventListener("click", (e) => {
+    //         const href = link.getAttribute("href");
+    //         setActive(href);
+    //         e.preventDefault();
+
+    //         if (href === "#") {
+    //             window.scrollTo({ top: 0, behavior: "smooth" });
+    //             return;
+    //         }
+
+    //         const target = document.querySelector(href);
+    //         if (target) {
+    //             const top =
+    //                 target.getBoundingClientRect().top + window.scrollY - 80;
+    //             window.scrollTo({ top, behavior: "smooth" });
+    //         }
+    //     });
+    // });
+    // links.forEach((link) => {
+    //     link.addEventListener("click", (e) => {
+    //         const href = link.getAttribute("href");
+
+    //         // Hanya proses sebagai smooth-scroll jika href adalah anchor ("#" atau "#id")
+    //         if (!href.startsWith("#")) {
+    //             return; // biarkan browser navigasi normal ke URL (mis. /reservasi-ruangan)
+    //         }
+
+    //         setActive(href);
+    //         e.preventDefault();
+
+    //         if (href === "#") {
+    //             window.scrollTo({ top: 0, behavior: "smooth" });
+    //             return;
+    //         }
+
+    //         const target = document.querySelector(href);
+    //         if (target) {
+    //             const top =
+    //                 target.getBoundingClientRect().top + window.scrollY - 80;
+    //             window.scrollTo({ top, behavior: "smooth" });
+    //         }
+    //     });
+    // });
     links.forEach((link) => {
         link.addEventListener("click", (e) => {
             const href = link.getAttribute("href");
+            const url = new URL(href, window.location.origin);
+            const isSamePage = url.pathname === window.location.pathname;
+
+            // Link menuju halaman LAIN (mis. Reservasi Ruangan, atau
+            // section anchor saat sedang TIDAK di landing page) —
+            // biarkan browser navigasi normal, jangan di-intercept.
+            if (!isSamePage) {
+                return;
+            }
+
             setActive(href);
             e.preventDefault();
 
-            if (href === "#") {
+            if (!url.hash) {
                 window.scrollTo({ top: 0, behavior: "smooth" });
                 return;
             }
 
-            const target = document.querySelector(href);
+            const target = document.querySelector(url.hash);
             if (target) {
                 const top =
                     target.getBoundingClientRect().top + window.scrollY - 80;
@@ -171,6 +225,17 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     });
+    if (window.location.hash) {
+        const target = document.querySelector(window.location.hash);
+        if (target) {
+            const top =
+                target.getBoundingClientRect().top + window.scrollY - 80;
+            window.scrollTo({ top, behavior: "auto" });
+            setActive(window.location.hash);
+        }
+    } else {
+        setActive(window.location.pathname === "/" ? url("/") : "#");
+    }
 
     const observer = new IntersectionObserver(
         (entries) => {

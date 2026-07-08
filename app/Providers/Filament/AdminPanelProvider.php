@@ -38,6 +38,8 @@ use SpyApp\ThemeAberdeen\ThemeAberdeenPlugin;
 use Tapp\FilamentAuthenticationLog\FilamentAuthenticationLogPlugin;
 use WatheqAlshowaiter\FilamentStickyTableHeader\StickyTableHeaderPlugin;
 use App\Facility\Filament\Resources\RoomReservations\RoomReservationResource;
+// use App\Mobility\Filament\Resources\Vehicles\VehicleResource;
+// use App\Mobility\Filament\Resources\VehicleReservations\VehicleReservationResource;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -72,6 +74,8 @@ class AdminPanelProvider extends PanelProvider
             ->resources([
                 RoomResource::class,
                 RoomReservationResource::class,
+                // VehicleResource::class,
+                // VehicleReservationResource::class,
             ])
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([

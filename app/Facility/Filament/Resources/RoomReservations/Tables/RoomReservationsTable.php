@@ -49,6 +49,7 @@ class RoomReservationsTable
 
                         return "{$record->guest_name} ({$instansi})";
                     }),
+                TextColumn::make('guest_contact')->label('Kontak Tamu')->placeholder('—'),
                 TextColumn::make('start_datetime')->label('Mulai')->dateTime('d M Y H:i')->sortable(),
                 TextColumn::make('end_datetime')->label('Selesai')->dateTime('d M Y H:i')->sortable(),
                 TextColumn::make('status')

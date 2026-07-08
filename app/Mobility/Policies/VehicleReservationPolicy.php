@@ -48,10 +48,6 @@ class VehicleReservationPolicy
         return $this->isOwner($authUser, $reservation);
     }
 
-    /**
-     * Approve/Reject BUKAN ability CRUD standar — permission ini
-     * didaftarkan & di-assign manual lewat MobilityPermissionSeeder.
-     */
     public function approve(AuthUser $authUser, VehicleReservation $reservation): bool
     {
         return $authUser->can('Approve:VehicleReservation');
@@ -68,9 +64,6 @@ class VehicleReservationPolicy
             return false;
         }
 
-        // Lindungi histori — Approved/Submitted/Completed tidak boleh
-        // dihapus permanen meski user punya permission, konsisten
-        // dengan RoomReservationPolicy.
         return in_array($reservation->status, [ReservationStatus::Draft, ReservationStatus::Cancelled], true);
     }
 

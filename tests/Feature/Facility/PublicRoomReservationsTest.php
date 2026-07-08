@@ -105,7 +105,7 @@ it('shows a conflict error when the room is already reserved for that time', fun
         'start_datetime'        => now()->addDay()->addHour()->toDateTimeString(),
         'end_datetime'          => now()->addDay()->addHours(3)->toDateTimeString(),
         'guest_name'            => 'Budi',
-        'guest_contact'         => '0812',
+        'guest_contact'         => '081234567890',
         'cf-turnstile-response' => 'test-token',
     ]);
 

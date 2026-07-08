@@ -43,6 +43,10 @@ class AppServiceProvider extends ServiceProvider
         Agenda::observe(AgendaObserver::class);
 
         Gate::before(function ($user, $ability) {
+            if ($ability === 'delete') {
+                return null;
+            }
+
             if ($user->hasRole('super_admin')) {
                 return true;
             }

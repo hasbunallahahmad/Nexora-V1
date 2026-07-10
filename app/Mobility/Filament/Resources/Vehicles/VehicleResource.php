@@ -23,6 +23,10 @@ class VehicleResource extends Resource
 
     protected static ?string $navigationLabel = 'Kendaraan';
 
+    protected static ?string $pluralLabel = 'Kendaraan';
+
+    protected static ?string $slug = 'kendaraan';
+
     protected static string|UnitEnum|null $navigationGroup = 'Mobilitas';
 
     protected static ?string $recordTitleAttribute = 'name';

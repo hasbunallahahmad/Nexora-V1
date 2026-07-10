@@ -42,6 +42,15 @@
 .fc {
     --fc-border-color: rgba(255, 255, 255, 0.08);
     --fc-today-bg-color: rgba(201, 168, 76, 0.08);
+    --fc-neutral-bg-color: transparent;
+    --fc-page-bg-color: transparent;
+}
+
+.fc-col-header,
+.fc-col-header-cell,
+.fc-scrollgrid-sync-table thead,
+.fc-daygrid-body thead {
+    background: transparent !important;
 }
 
 .fc-theme-standard td,
@@ -357,6 +366,7 @@ html {
         -webkit-overflow-scrolling: touch;
         scrollbar-width: none;
         padding-bottom: 6px;
+        flex-wrap: nowrap;
     }
     .app-header__nav::-webkit-scrollbar {
         display: none;
@@ -365,6 +375,13 @@ html {
         height: 36px;
         padding: 0 10px;
         font-size: 0.75rem;
+        flex-shrink: 0;
+    }
+    .app-header__nav > a:last-child {
+        flex-shrink: 0;
+        width: 32px;
+        height: 32px;
+        margin-left: 4px;
     }
 }
 @media (min-width: 640px) and (max-width: 1023px) {
@@ -709,5 +726,36 @@ html {
     .scroll-top-btn {
         bottom: 1rem !important;
         right: 1rem !important;
+    }
+}
+#room-reservation-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background: rgba(10, 20, 40, 0.85);
+    backdrop-filter: blur(3px);
+}
+
+#room-reservation-modal.modal-open {
+    display: flex;
+}
+
+@media (max-width: 639px) {
+    #room-reservation-modal {
+        align-items: flex-end !important;
+        padding: 0 !important;
+    }
+    #room-reservation-modal .modal-box,
+    #room-reservation-modal > div {
+        max-width: 100% !important;
+        border-radius: 16px 16px 0 0 !important;
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
     }
 }

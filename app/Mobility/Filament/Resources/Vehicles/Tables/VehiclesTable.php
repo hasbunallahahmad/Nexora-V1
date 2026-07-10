@@ -21,6 +21,9 @@ class VehiclesTable
         return $table
             ->query(\App\Mobility\Models\Vehicle::query()->withCount('occupyingReservations'))
             ->heading('Daftar Kendaraan')
+            ->description(
+                'Tabel ini menampilkan daftar kendaraan yang terdaftar dalam sistem.'
+            )
             ->deferLoading()
             ->paginated(['10', '25', '50'])
             ->columns([
@@ -28,7 +31,6 @@ class VehiclesTable
                 TextColumn::make('plate_number')->label('Nomor Polisi')->searchable(),
                 TextColumn::make('type')->label('Jenis'),
                 TextColumn::make('capacity')->label('Kapasitas')->sortable(),
-                TextColumn::make('driver_name')->label('Sopir')->placeholder('—'),
                 TextColumn::make('status')
                     ->label('Status')
                     ->badge()

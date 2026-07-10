@@ -36,14 +36,6 @@ class VehicleForm
                 ->minValue(0)
                 ->required(),
 
-            TextInput::make('driver_name')
-                ->label('Nama Sopir')
-                ->maxLength(100),
-
-            TextInput::make('driver_contact')
-                ->label('Kontak Sopir')
-                ->maxLength(100),
-
             Select::make('status')
                 ->label('Status')
                 ->options(collect(VehicleStatus::cases())->mapWithKeys(fn($s) => [$s->value => $s->label()]))

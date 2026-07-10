@@ -37,6 +37,13 @@ class RoomReservationForm
                 ->label('Keterangan')
                 ->maxLength(255),
 
+            TextInput::make('guest_contact')
+                ->label('Nomor Kontak Tamu')
+                ->numeric()
+                ->tel()
+                ->required()
+                ->maxLength(15),
+
             DateTimePicker::make('start_datetime')
                 ->label('Mulai')
                 ->required()

@@ -34,10 +34,10 @@ class User extends Authenticatable implements FilamentUser
             return false;
         }
 
-        return match ($panel->getId()) {
-            'admin' => $this->hasAnyRole(['super_admin', 'admin', 'Filament User']),
-            default => false,
-        };
+        // return match ($panel->getId()) {
+        //     'admin' => $this->hasAnyRole(['super_admin', 'admin', 'Filament User']),
+        //     default => false,
+        return $this->roles()->exists();
     }
 
     public function getFilamentName(): string

@@ -42,14 +42,27 @@ class PublicRoomReservationController extends Controller
 
         $events = $this->calendar->getEvents($query)
             ->filter(fn($event) => $event->sourceType === 'room_reservation')
-            ->map(fn($event) => [
-                'id'              => $event->id,
-                'title'           => $event->title,
-                'start'           => $event->start->toIso8601String(),
-                'end'             => $event->end?->toIso8601String(),
-                'backgroundColor' => $event->backgroundColor,
-                'extendedProps'   => $event->extendedProps,
-            ])
+            ->map(function ($event) {
+                $startJakarta = $event->start->copy()->setTimezone('Asia/Jakarta');
+                $endJakarta = $event->end?->copy()->setTimezone('Asia/Jakarta');
+
+                return [
+                    'id'              => $event->id,
+                    'title'           => $event->title,
+                    'start'           => $event->start->toIso8601String(),
+                    'end'             => $event->end?->toIso8601String(),
+                    'backgroundColor' => $event->backgroundColor,
+                    // 'guestName'       => $event->guestName,
+                    'extendedProps'   => array_merge($event->extendedProps, [
+                        'start_format'  => $startJakarta->translatedFormat('l, d F Y'),
+                        'end_format'    => ($endJakarta && ! $endJakarta->isSameDay($startJakarta))
+                            ? $endJakarta->translatedFormat('l, d F Y')
+                            : null,
+                        'waktu_mulai'   => $startJakarta->format('H:i') . ' WIB',
+                        'waktu_selesai' => $endJakarta?->format('H:i') . ' WIB',
+                    ]),
+                ];
+            })
             ->values();
 
         return response()->json($events)
@@ -79,7 +92,7 @@ class PublicRoomReservationController extends Controller
 
             return back()->with(
                 'reservation_success',
-                'Reservasi berhasil diajukan. Admin dinas akan menghubungi Anda via WhatsApp untuk konfirmasi.'
+                'Reservasi berhasil diajukan. Silahkan Konfirmasi Via WhatsApp info lebih lanjut (https://wa.me/+6281222233860).'
             );
         } catch (ReservationConflictException | RoomNotReservableException $e) {
             return back()->withErrors(['conflict' => $e->getMessage()])->withInput();

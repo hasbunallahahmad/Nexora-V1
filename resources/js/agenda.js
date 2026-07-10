@@ -61,6 +61,49 @@ document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") window.tutupModal();
 });
 
+// Modal Ruangan
+window.bukaModalRuangan = function (data) {
+    const statusEl = document.getElementById("rr-modal-status");
+    statusEl.textContent = data.status || "";
+
+    document.getElementById("rr-modal-judul").textContent = data.judul || "";
+    document.getElementById("rr-modal-ruangan").textContent =
+        data.ruangan || "—";
+    document.getElementById("rr-modal-waktu").textContent = data.waktu || "";
+    document.getElementById("rr-modal-pemohon").textContent =
+        data.pemohon || "—";
+
+    const ketWrap = document.getElementById("rr-modal-keterangan-wrap");
+    const ket = document.getElementById("rr-modal-keterangan");
+    if (data.keterangan) {
+        ket.textContent = data.keterangan;
+        ketWrap.style.setProperty("display", "flex", "important");
+    } else {
+        ketWrap.style.setProperty("display", "none", "important");
+    }
+
+    document
+        .getElementById("room-reservation-modal")
+        .classList.add("modal-open");
+    document.body.style.overflow = "hidden";
+};
+
+window.tutupModalRuangan = function () {
+    document
+        .getElementById("room-reservation-modal")
+        .classList.remove("modal-open");
+    document.body.style.overflow = "";
+};
+
+document.addEventListener("keydown", (e) => {
+    if (
+        e.key === "Escape" &&
+        document.getElementById("room-reservation-modal")
+    ) {
+        window.tutupModalRuangan();
+    }
+});
+
 // JAM DIGITAL
 function updateClock() {
     const now = new Date();

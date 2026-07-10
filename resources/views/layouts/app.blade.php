@@ -56,7 +56,7 @@
                     </a>
                 @endforeach
 
-                <a href="{{ url('/pengelola-kegiatan/login') }}" aria-label="" title="Login Pengelola"
+                <a href="{{ url('/pengelola-kegiatan/login') }}" aria-label="" title="Login Pengelola" target="_blank"
                     style="display:flex;align-items:center;opacity:0.5;transition:opacity 0.2s;"
                     onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.5'"
                     class="focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-1">

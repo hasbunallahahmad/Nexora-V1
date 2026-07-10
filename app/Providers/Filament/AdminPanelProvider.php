@@ -7,9 +7,11 @@ use AchyutN\FilamentLogViewer\FilamentLogViewer;
 use AlizHarb\ActivityLog\ActivityLogPlugin;
 use App\Facility\Filament\Resources\RoomReservations\RoomReservationResource;
 use App\Facility\Filament\Resources\Rooms\RoomResource;
+use App\Facility\Filament\Widgets\RoomAvailabilityWidget;
 use App\Helpers\PexelsHelper;
 use App\Mobility\Filament\Resources\VehicleReservations\VehicleReservationResource;
 use App\Mobility\Filament\Resources\Vehicles\VehicleResource;
+use App\Mobility\Filament\Widgets\VehicleAvailabilityWidget;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Caresome\FilamentAuthDesigner\AuthDesignerPlugin;
 use Caresome\FilamentAuthDesigner\Data\AuthPageConfig;
@@ -84,7 +86,8 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
-                //
+                RoomAvailabilityWidget::class,
+                VehicleAvailabilityWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

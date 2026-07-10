@@ -3,6 +3,10 @@
 
 @source '../../../../app/Filament/**/*';
 @source '../../../../resources/views/filament/**/*';
+@source '../../../../app/Facility/**/*';
+@source '../../../../app/Mobility/**/*';
+@source '../../../../resources/views/facility/**/*';
+@source '../../../../resources/views/mobility/**/*';
 @source '../../../../vendor/saade/filament-fullcalendar/resources/views/**/*.blade.php';
 @source '../../../../vendor/devonab/filament-easy-footer/resources/views/**/*';
 

@@ -2,6 +2,9 @@
 
 namespace App\Filament\Widgets;
 
+use App\Calendar\DTO\CalendarQuery;
+use App\Calendar\Enums\CalendarAudience;
+use App\Calendar\Services\CalendarAggregationService;
 use App\Filament\Resources\Agendas\Schemas\AgendaForm;
 use App\Models\Agenda;
 use Carbon\Carbon;
@@ -12,12 +15,10 @@ use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Support\Enums\Width;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Saade\FilamentFullCalendar\Actions;
 use Saade\FilamentFullCalendar\Actions\CreateAction;
 use Saade\FilamentFullCalendar\Widgets\FullCalendarWidget;
-use App\Calendar\DTO\CalendarQuery;
-use App\Calendar\Enums\CalendarAudience;
-use App\Calendar\Services\CalendarAggregationService;
 
 class CalendarWidget extends FullCalendarWidget
 {
@@ -35,6 +36,7 @@ class CalendarWidget extends FullCalendarWidget
                 ->slideOver()
                 ->label('Buat Agenda Baru')
                 ->modalWidth(Width::Large)
+                ->visible(fn() => Auth::user()->can('create', $this->getModel()))
                 ->mountUsing(
                     function ($form, array $arguments) {
                         $form->fill([
@@ -52,6 +54,7 @@ class CalendarWidget extends FullCalendarWidget
     {
         return [
             Actions\EditAction::make()
+                ->visible(fn() => Auth::user()->can('update', $this->getModel()))
                 ->mountUsing(
                     function (Agenda $record, $form, array $arguments) {
                         $startDate = $arguments['event']['start'] ?? $record->start_date;
@@ -70,7 +73,8 @@ class CalendarWidget extends FullCalendarWidget
                         ]);
                     }
                 ),
-            Actions\DeleteAction::make(),
+            Actions\DeleteAction::make()
+                ->visible(fn(Agenda $record) => Auth::user()->can('delete', $record)),
         ];
     }
 

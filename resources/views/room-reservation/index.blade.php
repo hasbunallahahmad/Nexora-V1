@@ -4,7 +4,7 @@
 
 @section('content')
     <section class="py-12 sm:py-16" style="background:var(--navy);min-height:100vh;">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6">
 
             <p class="text-xs font-bold tracking-widest uppercase mb-1" style="color:var(--gold-light);">🏢 Layanan Fasilitas
             </p>
@@ -160,6 +160,8 @@
         </div>
     </section>
 
+    @include('partials.room-reservation-modal')
+
     @push('scripts')
         <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
         <script>
@@ -170,20 +172,50 @@
                 const calendar = new FullCalendar.Calendar(calEl, {
                     initialView: 'dayGridMonth',
                     locale: 'id',
-                    height: 'auto',
+                    firstDay: 1,
                     headerToolbar: {
-                        left: 'prev,next today',
+                        left: 'prev,next',
                         center: 'title',
                         right: 'dayGridMonth,listWeek'
                     },
+                    buttonText: {
+                        today: 'today',
+                        month: 'month',
+                        listWeek: 'list',
+                    },
+                    dayHeaderFormat: {
+                        weekday: 'short'
+                    },
+                    moreLinkClick: 'popover',
+                    fixedWeekCount: false,
+                    showNonCurrentDates: true,
+                    displayEventTime: false,
+                    eventDisplay: 'block',
+                    eventTextColor: '#ffffff',
+                    height: 'auto',
                     events: {
                         url: '{{ route('api.room-reservation.kalender') }}',
+                        method: 'GET',
                         failure: (err) => console.error('[Reservasi Ruangan] Gagal load kalender:', err),
                     },
-                    eventDidMount(info) {
-                        if (info.event.extendedProps.room) {
-                            info.el.setAttribute('title', info.event.extendedProps.room);
-                        }
+                    eventClick(info) {
+                        info.jsEvent.preventDefault();
+                        info.jsEvent.stopPropagation();
+
+                        const p = info.event.extendedProps;
+
+                        let waktu = p.start_format ?? '';
+                        if (p.waktu_mulai) waktu += ` — ${p.waktu_mulai}`;
+                        if (p.waktu_selesai) waktu += ` s/d ${p.waktu_selesai}`;
+
+                        window.bukaModalRuangan({
+                            judul: info.event.title,
+                            ruangan: p.room ?? '—',
+                            waktu: waktu,
+                            pemohon: p.requestedBy ?? 'Tidak diketahui',
+                            status: p.status ?? '',
+                            keterangan: p.purpose ?? '',
+                        });
                     },
                 });
                 calendar.render();

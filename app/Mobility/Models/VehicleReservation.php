@@ -29,6 +29,7 @@ class VehicleReservation extends Model
         'purpose',
         'start_datetime',
         'end_datetime',
+        'actual_end_datetime',
         'status',
         'rejected_reason',
         'approved_at',
@@ -40,6 +41,7 @@ class VehicleReservation extends Model
         'status'         => ReservationStatus::class,
         'start_datetime' => 'datetime',
         'end_datetime'   => 'datetime',
+        'actual_end_datetime'  => 'datetime',
         'approved_at'    => 'datetime',
         'cancelled_at'   => 'datetime',
     ];

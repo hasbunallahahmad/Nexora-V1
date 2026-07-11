@@ -54,7 +54,7 @@ class CalendarWidget extends FullCalendarWidget
     {
         return [
             Actions\EditAction::make()
-                ->visible(fn() => Auth::user()->can('update', $this->getModel()))
+                ->visible(fn(?Agenda $record) => $record !== null &&  Auth::user()->can('update', $record))
                 ->mountUsing(
                     function (Agenda $record, $form, array $arguments) {
                         $startDate = $arguments['event']['start'] ?? $record->start_date;
@@ -74,7 +74,7 @@ class CalendarWidget extends FullCalendarWidget
                     }
                 ),
             Actions\DeleteAction::make()
-                ->visible(fn(Agenda $record) => Auth::user()->can('delete', $record)),
+                ->visible(fn(?Agenda $record) => $record !== null && Auth::user()->can('delete', $record)),
         ];
     }
 
@@ -124,28 +124,6 @@ class CalendarWidget extends FullCalendarWidget
 
     public function fetchEvents(array $info): array
     {
-        // return Agenda::query()
-        //     ->where('start_date', '>=', $info['start'], 'and')
-        //     ->where('start_date', '<=', $info['end'], 'and')
-        //     ->get()
-        //     ->map(
-        //         fn(Agenda $event) => [
-        //             'id' => $event->id,
-        //             'title' => strip_tags($event->judul_agenda),
-        //             'start' => $event->start_date,
-        //             'end' => $event->end_date,
-        //             'extendedProps' => [
-        //                 'description' => strip_tags($event->deskripsi),
-        //                 'location'    => strip_tags($event->location),
-        //                 'bidang' => $event->bidang()->pluck('nama_bidang')->implode(', '),
-        //                 'start_date' => Carbon::parse($event->start_date)->setTimezone('Asia/Jakarta')->format('Y-m-d H:i'),
-        //                 'end_date'    => $event->end_date
-        //                     ? Carbon::parse($event->end_date)->setTimezone('Asia/Jakarta')->format('Y-m-d H:i')
-        //                     : null,
-        //             ],
-        //         ]
-        //     )
-        //     ->toArray();
         $query = new CalendarQuery(
             start: Carbon::parse($info['start']),
             end: Carbon::parse($info['end']),
@@ -159,7 +137,9 @@ class CalendarWidget extends FullCalendarWidget
                 'title'         => $event->title,
                 'start'         => $event->start,
                 'end'           => $event->end,
-                'extendedProps' => $event->extendedProps,
+                'extendedProps' => array_merge($event->extendedProps, [
+                    'sourceType' => $event->sourceType,
+                ]),
             ])
             ->toArray();
     }
@@ -340,6 +320,13 @@ class CalendarWidget extends FullCalendarWidget
 
     public function onEventClick(array $event): void
     {
+        $sourceType = $event['extendedProps']['sourceType'] ?? 'activity';
+
+        if ($sourceType !== 'activity') {
+            $this->notifyNonActivityEvent($event, $sourceType);
+            return;
+        }
+
         if ($this->getModel()) {
             $this->record = $this->resolveRecord($event['id']);
         }
@@ -348,6 +335,30 @@ class CalendarWidget extends FullCalendarWidget
             'type' => 'click',
             'event' => $event,
         ]);
+    }
+
+    private function notifyNonActivityEvent(array $event, string $sourceType): void
+    {
+        $props = $event['extendedProps'] ?? [];
+
+        $label = match ($sourceType) {
+            'room_reservation'    => 'Reservasi Ruangan',
+            'vehicle_reservation' => 'Reservasi Kendaraan',
+            default               => 'Kegiatan',
+        };
+
+        $detailLines = array_filter([
+            $sourceType === 'room_reservation' ? ('Ruangan: ' . ($props['room'] ?? '—')) : null,
+            $sourceType === 'vehicle_reservation' ? ('Kendaraan: ' . ($props['vehicle'] ?? '—')) : null,
+            'Status: ' . ($props['status'] ?? '—'),
+            'Diajukan oleh: ' . ($props['requestedBy'] ?? '—'),
+        ]);
+
+        Notification::make()
+            ->title("{$label}: {$event['title']}")
+            ->body(implode(' • ', $detailLines))
+            ->info()
+            ->send();
     }
 
     public function onEventDrop(array $event, array $oldEvent, array $relatedEvents, array $delta, ?array $oldResource, ?array $newResource): bool

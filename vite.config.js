@@ -24,7 +24,7 @@ export default defineConfig({
         port: 5173,
         strictPort: true,
         hmr: {
-            host: "172.24.151.229", // Ganti dengan IP laptop Anda
+            host: "192.168.1.2", // Ganti dengan IP laptop Anda
             port: 5173,
         },
     },

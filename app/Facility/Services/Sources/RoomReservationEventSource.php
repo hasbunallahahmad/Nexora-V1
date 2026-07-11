@@ -60,7 +60,8 @@ final class RoomReservationEventSource implements CalendarEventSource
                 backgroundColor: $this->colorForRoom($reservation->room_id),
                 extendedProps: [
                     'room'        => $reservation->room?->name,
-                    'requestedBy' => $reservation->requestedBy?->name,
+                    'requestedBy' => $reservation->requestedBy?->name
+                        ?? $reservation->guest_name . ($reservation->guest_instansi ? " ({$reservation->guest_instansi})" : ''),
                     'purpose'     => $reservation->purpose,
                     'status'      => $reservation->status->label(),
                 ],

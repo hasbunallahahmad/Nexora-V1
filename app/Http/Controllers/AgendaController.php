@@ -6,7 +6,6 @@ use App\Calendar\DTO\CalendarQuery;
 use App\Calendar\Enums\CalendarAudience;
 use App\Calendar\Services\CalendarAggregationService;
 use App\Http\Requests\KalenderFeedRequest;
-use App\Http\Resources\AgendaCalendarResource;
 use App\Http\Resources\AgendaDetailResource;
 use App\Models\Agenda;
 use Illuminate\Http\JsonResponse;
@@ -69,16 +68,18 @@ class AgendaController extends Controller
 
         $query = new CalendarQuery($start, $end, CalendarAudience::Public);
 
-        $events = $this->calendar->getEvents($query)->map(fn($event) => [
-            'id'              => $event->id,
-            'title'           => $event->title,
-            'start'           => $event->start->toDateString(),
-            'end'             => $event->end?->copy()->addDay()->toDateString(),
-            'backgroundColor' => $event->backgroundColor,
-            'borderColor'     => 'transparent',
-            'textColor'       => '#ffffff',
-            'extendedProps'   => $event->extendedProps,
-        ])->values();
+        $events = $this->calendar->getEvents($query)
+            ->filter(fn($event) => $event->sourceType === 'activity')
+            ->map(fn($event) => [
+                'id'              => $event->id,
+                'title'           => $event->title,
+                'start'           => $event->start->toDateString(),
+                'end'             => $event->end?->copy()->addDay()->toDateString(),
+                'backgroundColor' => $event->backgroundColor,
+                'borderColor'     => 'transparent',
+                'textColor'       => '#ffffff',
+                'extendedProps'   => $event->extendedProps,
+            ])->values();
 
         return response()->json($events)
             ->header('X-Content-Type-Options', 'nosniff')

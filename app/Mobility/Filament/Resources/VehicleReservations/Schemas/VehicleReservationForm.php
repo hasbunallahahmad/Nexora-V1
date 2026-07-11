@@ -22,6 +22,11 @@ class VehicleReservationForm
                 ->searchable()
                 ->required(),
 
+            TextInput::make('driver_name')
+                ->label('Sopir')
+                ->maxLength(100)
+                ->placeholder('Nama sopir (opsional jika tidak ada)'),
+
             Select::make('agenda_id')
                 ->label('Agenda Terkait (opsional)')
                 ->relationship('agenda', 'judul_agenda')
@@ -49,7 +54,6 @@ class VehicleReservationForm
 
             DateTimePicker::make('end_datetime')
                 ->label('Selesai')
-                ->required()
                 ->seconds(false)
                 ->afterOrEqual('start_datetime'),
         ];

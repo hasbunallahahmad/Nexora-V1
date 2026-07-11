@@ -37,13 +37,18 @@ class VehicleReservationsTable
             ->paginated(['10', '25', '50'])
             ->defaultSort('created_at', 'desc')
             ->columns([
-                TextColumn::make('title')->label('Judul')->searchable()->wrap(),
+                TextColumn::make('title')->label('Judul Keperluan')->searchable()->wrap(),
                 TextColumn::make('vehicle.name')->label('Kendaraan')->sortable(),
                 TextColumn::make('vehicle.driver_name')->label('Sopir')->placeholder('—'),
                 TextColumn::make('destination')->label('Tujuan')->placeholder('—'),
                 TextColumn::make('requestedBy.name')->label('Diajukan Oleh'),
                 TextColumn::make('start_datetime')->label('Mulai')->dateTime('d M Y H:i')->sortable(),
                 TextColumn::make('end_datetime')->label('Selesai')->dateTime('d M Y H:i')->sortable(),
+                TextColumn::make('actual_end_datetime')
+                    ->label('Selesai Aktual')
+                    ->dateTime('d M Y H:i')
+                    ->placeholder('—')
+                    ->sortable(),
                 TextColumn::make('status')
                     ->label('Status')
                     ->badge()
@@ -137,6 +142,35 @@ class VehicleReservationsTable
                             Notification::make()->title('Reservasi dibatalkan')->success()->send();
                         } catch (InvalidVehicleReservationTransitionException $e) {
                             Notification::make()->title('Gagal membatalkan')->body($e->getMessage())->danger()->send();
+                        }
+                    }),
+
+                Action::make('complete')
+                    ->label('Selesaikan Pemakaian')
+                    ->icon('heroicon-o-flag')
+                    ->color('info')
+                    ->visible(fn(VehicleReservation $record) => Auth::user()->can('complete', $record)
+                        && $record->status === ReservationStatus::Approved)
+                    ->requiresConfirmation()
+                    ->schema([
+                        \Filament\Forms\Components\DateTimePicker::make('actual_end_datetime')
+                            ->label('Waktu Selesai Aktual')
+                            ->required()
+                            ->seconds(false)
+                            ->default(now())
+                            ->native(false),
+                    ])
+                    ->action(function (VehicleReservation $record, array $data, VehicleReservationService $service): void {
+                        try {
+                            $service->complete(new \App\Mobility\DTO\CompleteVehicleReservationData(
+                                $record->id,
+                                Auth::id(),
+                                \Carbon\Carbon::parse($data['actual_end_datetime']),
+                            ));
+
+                            Notification::make()->title('Pemakaian kendaraan diselesaikan')->success()->send();
+                        } catch (InvalidVehicleReservationTransitionException | \InvalidArgumentException $e) {
+                            Notification::make()->title('Gagal menyelesaikan')->body($e->getMessage())->danger()->send();
                         }
                     }),
 

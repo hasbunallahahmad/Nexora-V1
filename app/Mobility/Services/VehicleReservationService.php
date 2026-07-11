@@ -6,10 +6,12 @@ namespace App\Mobility\Services;
 
 use App\Mobility\Actions\ApproveVehicleReservationAction;
 use App\Mobility\Actions\CancelVehicleReservationAction;
+use App\Mobility\Actions\CompleteVehicleReservationAction;
 use App\Mobility\Actions\CreateDraftVehicleReservationAction;
 use App\Mobility\Actions\RejectVehicleReservationAction;
 use App\Mobility\Actions\SubmitVehicleReservationAction;
 use App\Mobility\DTO\ApproveVehicleReservationData;
+use App\Mobility\DTO\CompleteVehicleReservationData;
 use App\Mobility\DTO\CreateVehicleReservationData;
 use App\Mobility\DTO\RejectVehicleReservationData;
 use App\Mobility\Models\VehicleReservation;
@@ -22,6 +24,7 @@ final class VehicleReservationService
         private readonly ApproveVehicleReservationAction $approveAction,
         private readonly RejectVehicleReservationAction $rejectAction,
         private readonly CancelVehicleReservationAction $cancelAction,
+        private readonly CompleteVehicleReservationAction $completeAction,
     ) {}
 
     public function createDraft(CreateVehicleReservationData $data): VehicleReservation
@@ -47,5 +50,10 @@ final class VehicleReservationService
     public function cancel(int $reservationId): VehicleReservation
     {
         return $this->cancelAction->execute($reservationId);
+    }
+
+    public function complete(CompleteVehicleReservationData $data): VehicleReservation
+    {
+        return $this->completeAction->execute($data);
     }
 }

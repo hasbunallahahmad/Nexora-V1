@@ -101,4 +101,13 @@ class VehicleReservationPolicy
     {
         return $reservation->requested_by === $authUser->getKey();
     }
+
+    public function complete(AuthUser $authUser, VehicleReservation $reservation): bool
+    {
+        if ($authUser->can('Complete:VehicleReservation')) {
+            return true;
+        }
+
+        return $this->isOwner($authUser, $reservation);
+    }
 }

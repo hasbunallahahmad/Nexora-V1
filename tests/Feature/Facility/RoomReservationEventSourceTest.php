@@ -72,3 +72,40 @@ it('excludes draft and rejected reservations for any audience', function () {
 
     expect($events)->toHaveCount(0);
 });
+
+it('shows guest name and instansi when reservation has no linked user', function () {
+    $room = Room::factory()->create();
+
+    RoomReservation::factory()->create([
+        'room_id'        => $room->id,
+        'status'         => ReservationStatus::Approved,
+        'requested_by'   => null,
+        'guest_name'     => 'Gogon',
+        'guest_instansi' => 'KONI',
+        'start_datetime' => now()->addDay(),
+        'end_datetime'   => now()->addDay()->addHours(2),
+    ]);
+
+    $query = new CalendarQuery(now(), now()->addWeek(), CalendarAudience::Public);
+    $events = (new RoomReservationEventSource())->events($query);
+
+    expect($events->first()->extendedProps['requestedBy'])->toBe('Gogon (KONI)');
+});
+
+it('shows requested user name when reservation is linked to an account', function () {
+    $room = Room::factory()->create();
+    $user = \App\Models\User::factory()->create(['name' => 'Budi Santoso']);
+
+    RoomReservation::factory()->create([
+        'room_id'        => $room->id,
+        'status'         => ReservationStatus::Approved,
+        'requested_by'   => $user->id,
+        'start_datetime' => now()->addDay(),
+        'end_datetime'   => now()->addDay()->addHours(2),
+    ]);
+
+    $query = new CalendarQuery(now(), now()->addWeek(), CalendarAudience::Public);
+    $events = (new RoomReservationEventSource())->events($query);
+
+    expect($events->first()->extendedProps['requestedBy'])->toBe('Budi Santoso');
+});

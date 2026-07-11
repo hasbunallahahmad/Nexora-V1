@@ -6,6 +6,7 @@ namespace App\Mobility\Providers;
 
 use App\Mobility\Events\VehicleReservationApproved;
 use App\Mobility\Events\VehicleReservationCancelled;
+use App\Mobility\Events\VehicleReservationCompleted;
 use App\Mobility\Events\VehicleReservationRejected;
 use App\Mobility\Events\VehicleReservationSubmitted;
 use App\Mobility\Listeners\DispatchCalendarSourceChanged;
@@ -45,6 +46,7 @@ final class MobilityServiceProvider extends ServiceProvider
             VehicleReservationApproved::class,
             VehicleReservationRejected::class,
             VehicleReservationCancelled::class,
+            VehicleReservationCompleted::class,
         ];
 
         foreach ($calendarRelevantEvents as $event) {

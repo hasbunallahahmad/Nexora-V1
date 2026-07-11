@@ -6,9 +6,11 @@ use App\Calendar\DTO\CalendarQuery;
 use App\Calendar\Enums\CalendarAudience;
 use App\Calendar\Services\CalendarAggregationService;
 use App\Calendar\Services\CalendarCacheService;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
 
-uses(Tests\TestCase::class);
+// uses(Tests\TestCase::class);
+// uses(RefreshDatabase::class);
 
 it('merges and sorts events from multiple sources', function () {
     $sourceA = new class implements CalendarEventSource {

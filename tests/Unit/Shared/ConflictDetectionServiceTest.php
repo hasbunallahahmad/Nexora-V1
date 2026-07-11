@@ -8,7 +8,7 @@ use App\Shared\DTO\DateRange;
 use App\Shared\Services\ConflictDetectionService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-uses(Tests\TestCase::class, RefreshDatabase::class);
+uses(RefreshDatabase::class);
 
 it('detects overlapping submitted reservations on the same room', function () {
     $room = Room::factory()->create();

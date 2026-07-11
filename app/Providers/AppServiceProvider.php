@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Agenda;
+use App\Activity\Models\Agenda as ActivityAgenda;
 use App\Observers\AgendaObserver;
 use Carbon\Carbon;
 use Illuminate\Auth\Events\Login;
@@ -41,6 +42,7 @@ class AppServiceProvider extends ServiceProvider
 
         Carbon::setLocale('id');
         Agenda::observe(AgendaObserver::class);
+        ActivityAgenda::observe(AgendaObserver::class);
 
         Gate::before(function ($user, $ability) {
             if ($ability === 'delete') {

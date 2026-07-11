@@ -1,8 +1,10 @@
 <?php
 
 use App\Calendar\Services\CalendarCacheService;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
-uses(Tests\TestCase::class);
+// uses(Tests\TestCase::class);
+// uses(RefreshDatabase::class);
 
 
 it('starts at version 0 and increments on invalidate', function () {

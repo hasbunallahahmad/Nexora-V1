@@ -8,6 +8,7 @@ use AlizHarb\ActivityLog\ActivityLogPlugin;
 use App\Facility\Filament\Resources\RoomReservations\RoomReservationResource;
 use App\Facility\Filament\Resources\Rooms\RoomResource;
 use App\Facility\Filament\Widgets\RoomAvailabilityWidget;
+use App\Filament\Widgets\PendingApprovalsWidget;
 use App\Helpers\PexelsHelper;
 use App\Mobility\Filament\Resources\VehicleReservations\VehicleReservationResource;
 use App\Mobility\Filament\Resources\Vehicles\VehicleResource;
@@ -79,6 +80,7 @@ class AdminPanelProvider extends PanelProvider
                 RoomReservationResource::class,
                 VehicleResource::class,
                 VehicleReservationResource::class,
+
             ])
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
@@ -88,6 +90,7 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 RoomAvailabilityWidget::class,
                 VehicleAvailabilityWidget::class,
+                PendingApprovalsWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Activity\Models\Agenda;
+use App\Activity\Repositories\AgendaRepository;
 use App\Calendar\DTO\CalendarQuery;
 use App\Calendar\Enums\CalendarAudience;
 use App\Calendar\Services\CalendarAggregationService;
 use App\Http\Requests\KalenderFeedRequest;
 use App\Http\Resources\AgendaDetailResource;
-use App\Models\Agenda;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -18,12 +19,13 @@ class AgendaController extends Controller
 {
     public function __construct(
         private readonly CalendarAggregationService $calendar,
+        private readonly AgendaRepository $agendas,
     ) {}
 
     public function index()
     {
-        $hariIni = Agenda::published()->hariIni()->with('bidang')->get();
-        $mendatang = Agenda::published()->mendatang()->with('bidang')->take(9)->get();
+        $hariIni = $this->agendas->publishedHariIni();
+        $mendatang = $this->agendas->publishedMendatang(9);
 
         $stats = Cache::remember('agenda_stats', 60, fn() => [
             'hari_ini'   => Agenda::published()->hariIni()->count('*'),
@@ -37,8 +39,8 @@ class AgendaController extends Controller
 
     public function polling(): JsonResponse
     {
-        $hariIni   = Agenda::published()->hariIni()->with('bidang')->get();
-        $mendatang = Agenda::published()->mendatang()->with('bidang')->take(9)->get();
+        $hariIni = $this->agendas->publishedHariIni();
+        $mendatang = $this->agendas->publishedMendatang(9);
 
         $stats = Cache::remember('agenda_stats', 60, fn() => [
             'hari_ini'   => Agenda::published()->hariIni()->count('*'),

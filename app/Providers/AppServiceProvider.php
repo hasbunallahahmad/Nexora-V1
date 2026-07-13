@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Models\Agenda;
+// use App\Models\Agenda;
 use App\Activity\Models\Agenda as ActivityAgenda;
 use App\Observers\AgendaObserver;
 use Carbon\Carbon;
@@ -41,7 +41,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Carbon::setLocale('id');
-        Agenda::observe(AgendaObserver::class);
+        // Agenda::observe(AgendaObserver::class);
         ActivityAgenda::observe(AgendaObserver::class);
 
         Gate::before(function ($user, $ability) {

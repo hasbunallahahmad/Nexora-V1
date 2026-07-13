@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Mobility\Models;
 
-use App\Models\Agenda;
 use App\Models\User;
+use App\Activity\Models\Agenda;
 use App\Shared\Enums\ReservationStatus;
 use Database\Factories\Mobility\VehicleReservationFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

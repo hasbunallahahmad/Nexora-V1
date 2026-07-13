@@ -7,7 +7,9 @@ export default defineConfig({
         laravel({
             input: [
                 "resources/css/app.css",
+                "resources/css/agenda.css",
                 "resources/js/app.js",
+                "resources/js/agenda.js",
                 "resources/css/filament/admin/theme.css",
             ],
             refresh: true,
@@ -16,7 +18,7 @@ export default defineConfig({
     ],
     // server: {
     //     watch: {
-    //         ignored: ['**/storage/framework/views/**'],
+    //         ignored: ["**/storage/framework/views/**"],
     //     },
     // },
     server: {
@@ -24,7 +26,7 @@ export default defineConfig({
         port: 5173,
         strictPort: true,
         hmr: {
-            host: "192.168.1.2", // Ganti dengan IP laptop Anda
+            host: "172.24.151.229", // Ganti dengan IP laptop Anda
             port: 5173,
         },
     },

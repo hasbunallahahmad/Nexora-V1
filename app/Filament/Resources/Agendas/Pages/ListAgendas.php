@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Agendas\Pages;
 
+use App\Activity\Models\Agenda;
 use App\Filament\Resources\Agendas\AgendaResource;
 use Carbon\Carbon;
 use Filament\Resources\Pages\ListRecords;
@@ -23,7 +24,7 @@ class ListAgendas extends ListRecords
             'akan_datang' => Tab::make('Akan Datang')
                 ->icon('heroicon-m-arrow-right-circle')
                 ->badge(
-                    \App\Models\Agenda::query()
+                    Agenda::query()
                         ->where('start_date', '>', $now)
                         ->count()
                 )
@@ -35,7 +36,7 @@ class ListAgendas extends ListRecords
             'berlangsung' => Tab::make('Sedang Berlangsung')
                 ->icon('heroicon-m-play-circle')
                 ->badge(
-                    \App\Models\Agenda::query()
+                    Agenda::query()
                         ->where('start_date', '<=', $now)
                         ->where(function ($q) use ($now) {
                             $q->where('end_date', '>=', $now)
@@ -62,7 +63,7 @@ class ListAgendas extends ListRecords
             'selesai' => Tab::make('Selesai')
                 ->icon('heroicon-m-check-circle')
                 ->badge(
-                    \App\Models\Agenda::query()
+                    Agenda::query()
                         ->where(function ($q) use ($now) {
                             $q->where('end_date', '<', $now)
                                 ->orWhere(function ($q2) use ($now) {

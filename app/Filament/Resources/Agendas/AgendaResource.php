@@ -2,10 +2,10 @@
 
 namespace App\Filament\Resources\Agendas;
 
+use App\Activity\Models\Agenda;
 use App\Filament\Resources\Agendas\Pages\ListAgendas;
 use App\Filament\Resources\Agendas\Schemas\AgendaForm;
 use App\Filament\Resources\Agendas\Tables\AgendasTable;
-use App\Models\Agenda;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;

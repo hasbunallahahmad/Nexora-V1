@@ -9,7 +9,7 @@ use App\Calendar\DTO\CalendarEventData;
 use App\Calendar\DTO\CalendarQuery;
 use App\Calendar\Enums\CalendarAudience;
 use App\Http\Resources\AgendaCalendarResource;
-use App\Models\Agenda;
+use App\Activity\Models\Agenda;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 

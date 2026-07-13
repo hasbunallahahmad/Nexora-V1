@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Agendas\Tables;
 
+use App\Activity\Models\Agenda;
+use App\Activity\Services\AgendaService;
 use App\Filament\Exports\AgendaExport;
 use App\Filament\Resources\Agendas\Schemas\AgendaForm;
 use Filament\Actions\BulkActionGroup;
@@ -26,7 +28,7 @@ class AgendasTable
     {
         return $table
             ->deferLoading()
-            ->query(\App\Models\Agenda::query()->with('bidang'))
+            ->query(Agenda::query()->with('bidang'))
             ->striped()
             ->defaultSort('created_at', 'desc')
             ->filtersLayout(FiltersLayout::AboveContentCollapsible)
@@ -158,7 +160,10 @@ class AgendasTable
                     ->iconButton()
                     ->modalHeading('Edit Agenda')
                     ->modalWidth('lg')
-                    ->schema(AgendaForm::getComponents()),
+                    ->schema(AgendaForm::getComponents())
+                    ->using(function (Agenda $record, array $data, AgendaService $service): Agenda {
+                        return $service->update($record->id, $data);
+                    }),
                 DeleteAction::make()
                     ->iconButton(),
             ])
@@ -168,7 +173,10 @@ class AgendasTable
                     ->modalHeading('Buat Agenda Baru')
                     ->modalSubmitActionLabel('Simpan')
                     ->modalWidth('3xl')
-                    ->schema(AgendaForm::getComponents()),
+                    ->schema(AgendaForm::getComponents())
+                    ->using(function (array $data, AgendaService $service): Agenda {
+                        return $service->create($data);
+                    }),
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                     ExportAction::make()->exports([

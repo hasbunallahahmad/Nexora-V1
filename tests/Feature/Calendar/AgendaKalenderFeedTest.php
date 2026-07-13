@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Agenda;
+use App\Activity\Models\Agenda;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);

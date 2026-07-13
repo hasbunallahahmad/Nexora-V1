@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Activity\Models\Agenda;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;

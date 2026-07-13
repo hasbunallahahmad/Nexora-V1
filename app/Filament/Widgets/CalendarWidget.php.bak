@@ -2,11 +2,11 @@
 
 namespace App\Filament\Widgets;
 
-use App\Activity\Models\Agenda;
 use App\Calendar\DTO\CalendarQuery;
 use App\Calendar\Enums\CalendarAudience;
 use App\Calendar\Services\CalendarAggregationService;
 use App\Filament\Resources\Agendas\Schemas\AgendaForm;
+use App\Models\Agenda;
 use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Forms\Components\DateTimePicker;

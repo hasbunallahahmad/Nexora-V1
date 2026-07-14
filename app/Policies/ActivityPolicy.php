@@ -11,10 +11,11 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 class ActivityPolicy
 {
     use HandlesAuthorization;
-    
+
     public function viewAny(AuthUser $authUser): bool
     {
-        return $authUser->can('ViewAny:Activity');
+        // return $authUser->can('ViewAny:Activity');
+        return $authUser->hasRole('super_admin');
     }
 
     public function view(AuthUser $authUser, Activity $activity): bool
@@ -66,5 +67,4 @@ class ActivityPolicy
     {
         return $authUser->can('Reorder:Activity');
     }
-
 }

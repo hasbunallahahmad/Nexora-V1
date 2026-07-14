@@ -5,6 +5,8 @@ namespace App\Providers;
 // use App\Models\Agenda;
 use App\Activity\Models\Agenda as ActivityAgenda;
 use App\Observers\AgendaObserver;
+use App\Policies\ActivityPolicy;
+use App\Policies\AuthenticationLogPolicy;
 use Carbon\Carbon;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
@@ -16,6 +18,8 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
+use Rappasoft\LaravelAuthenticationLog\Models\AuthenticationLog;
+use Spatie\Activitylog\Models\Activity;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -43,6 +47,8 @@ class AppServiceProvider extends ServiceProvider
         Carbon::setLocale('id');
         // Agenda::observe(AgendaObserver::class);
         ActivityAgenda::observe(AgendaObserver::class);
+        Gate::policy(Activity::class, ActivityPolicy::class);
+        Gate::policy(AuthenticationLog::class, AuthenticationLogPolicy::class);
 
         Gate::before(function ($user, $ability) {
             if ($ability === 'delete') {

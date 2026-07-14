@@ -138,7 +138,7 @@ class AdminPanelProvider extends PanelProvider
                     ->withLogo(asset('images/logo.png'))
                     ->withSentence('Made with ❤️ by : Arpusda | Ver. 2.0'),
                 FilamentEditProfilePlugin::make()
-                    ->canAccess(fn() => Auth::user()->id === 1)
+                    // ->canAccess(fn() => Auth::user()->id === 1)
                     ->shouldRegisterNavigation(false),
             ])
             ->viteTheme('resources/css/filament/admin/theme.css')

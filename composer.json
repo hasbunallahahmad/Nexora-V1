@@ -23,6 +23,7 @@
         "pxlrbt/filament-excel": "^3.6",
         "saade/filament-fullcalendar": "4.0.0-beta3",
         "sanzgrapher/filament-draggable-modal": "^1.0",
+        "spatie/laravel-activitylog": "4.12.3",
         "spatie/laravel-permission": "^6.24",
         "spykapps/theme-aberdeen": "^1.0",
         "tapp/filament-authentication-log": "5.0",

@@ -7,11 +7,11 @@ use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\JsonSchema\Types\StringType;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Log;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
+// use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\LaravelPasskeys\Models\Concerns\InteractsWithPasskeys;
 use Spatie\Permission\Traits\HasRoles;
 

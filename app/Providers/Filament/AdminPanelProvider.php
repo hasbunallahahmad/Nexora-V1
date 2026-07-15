@@ -10,6 +10,7 @@ use App\Facility\Filament\Resources\Rooms\RoomResource;
 use App\Facility\Filament\Widgets\RoomAvailabilityWidget;
 use App\Filament\Widgets\PendingApprovalsWidget;
 use App\Helpers\PexelsHelper;
+use App\Http\Middleware\RequirePasswordChange;
 use App\Mobility\Filament\Resources\VehicleReservations\VehicleReservationResource;
 use App\Mobility\Filament\Resources\Vehicles\VehicleResource;
 use App\Mobility\Filament\Widgets\VehicleAvailabilityWidget;
@@ -97,6 +98,7 @@ class AdminPanelProvider extends PanelProvider
                 AddQueuedCookiesToResponse::class,
                 StartSession::class,
                 AuthenticateSession::class,
+                RequirePasswordChange::class,
                 ShareErrorsFromSession::class,
                 VerifyCsrfToken::class,
                 SubstituteBindings::class,

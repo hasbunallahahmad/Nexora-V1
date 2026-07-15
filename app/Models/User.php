@@ -54,6 +54,9 @@ class User extends Authenticatable implements FilamentUser
         'name',
         'email',
         'password',
+        'is_active',
+        'must_change_password',
+        'email_verified_at',
     ];
 
     /**
@@ -76,6 +79,7 @@ class User extends Authenticatable implements FilamentUser
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'must_change_password' => 'boolean',
         ];
     }
 
@@ -92,5 +96,14 @@ class User extends Authenticatable implements FilamentUser
             ->logAll() // Untuk testing, log semua field dulu
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs();
+    }
+
+    protected static function booted(): void
+    {
+        static::updating(function (self $user): void {
+            if ($user->isDirty('password') && $user->must_change_password) {
+                $user->must_change_password = false;
+            }
+        });
     }
 }

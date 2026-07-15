@@ -18,9 +18,29 @@
             </p>
 
             @if (session('reservation_success'))
-                <div class="rounded-xl p-4 mb-6"
+                @php
+                    $sukses = session('reservation_success');
+                    $pesanWa = "Halo, saya {$sukses['guest_name']} ingin konfirmasi reservasi ruangan {$sukses['room_name']} pada {$sukses['start_format']} WIB.";
+                    $nomorAdmin = config('services.whatsapp.admin_number');
+                @endphp
+                <div class="rounded-xl p-4 mb-6 flex flex-col gap-3"
                     style="background:rgba(39,174,96,0.15);border:1px solid rgba(39,174,96,0.4);color:#a8e6c1;">
-                    ✅ {{ session('reservation_success') }}
+                    <p>✅ {{ $sukses['message'] }}</p>
+
+                    @if ($nomorAdmin)
+                        <a href="https://wa.me/{{ $nomorAdmin }}?text={{ urlencode($pesanWa) }}" target="_blank"
+                            rel="noopener noreferrer"
+                            class="inline-flex items-center gap-2 self-start px-4 py-2 rounded-lg font-semibold text-sm transition-all hover:-translate-y-0.5"
+                            style="background:#25d366;color:#fff;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="white" aria-hidden="true">
+                                <path
+                                    d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1s-1.2-.4-2.3-1.4c-.9-.8-1.5-1.7-1.6-2-.2-.3 0-.5.1-.6l.4-.5c.1-.2.2-.3.2-.5s-.1-.4-.2-.5C10.6 9 10 7.5 9.8 7c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3C7.8 7.2 7 8 7 9.7c0 1.7 1.2 3.3 1.4 3.5.1.2 2.5 3.8 6 5.3.8.3 1.5.5 2 .7.8.2 1.6.2 2.2.1.7-.1 2-.8 2.3-1.6.3-.8.3-1.4.2-1.5-.1-.3-.3-.3-.6-.4z" />
+                                <path
+                                    d="M12 2C6.5 2 2 6.5 2 12c0 1.9.5 3.7 1.4 5.2L2 22l4.9-1.3C8.3 21.5 10.1 22 12 22c5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.2c-1.7 0-3.4-.5-4.8-1.3l-.3-.2-3 .8.8-2.9-.2-.3C3.7 15.1 3.2 13.6 3.2 12 3.2 7.1 7.1 3.2 12 3.2S20.8 7.1 20.8 12 16.9 20.2 12 20.2z" />
+                            </svg>
+                            Konfirmasi via WhatsApp →
+                        </a>
+                    @endif
                 </div>
             @endif
 
@@ -56,7 +76,8 @@
                 style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);">
                 <h2 class="text-white font-semibold mb-4">Formulir Pengajuan</h2>
 
-                <form method="POST" action="{{ route('room-reservation.store') }}" class="flex flex-col gap-4">
+                <form id="form-reservasi-ruangan" method="POST" action="{{ route('room-reservation.store') }}"
+                    class="flex flex-col gap-4">
                     @csrf
 
                     {{-- Honeypot — jangan diisi manusia --}}
@@ -151,7 +172,8 @@
                         <p class="text-xs" style="color:#f5b7b1;">{{ $message }}</p>
                     @enderror
 
-                    <button type="submit" class="px-6 py-3 rounded-lg font-bold text-sm self-start"
+                    <button type="button" id="btn-buka-konfirmasi"
+                        class="px-6 py-3 rounded-lg font-bold text-sm self-start"
                         style="background:var(--gold);color:var(--navy);">
                         Ajukan Reservasi
                     </button>
@@ -161,6 +183,42 @@
     </section>
 
     @include('partials.room-reservation-modal')
+    <div id="confirm-reservation-modal" onclick="if(event.target===this) tutupModalKonfirmasi()">
+        <div class="modal-enter w-full max-w-md rounded-2xl overflow-hidden shadow-2xl" style="background:white;"
+            onclick="event.stopPropagation()">
+
+            <div class="p-6" style="background:var(--navy);">
+                <h3 class="text-white text-xl leading-snug" style="font-family:'Playfair Display',serif;">
+                    Konfirmasi Pengajuan
+                </h3>
+            </div>
+
+            <div class="p-6 flex flex-col gap-3">
+                <p class="text-sm" style="color:var(--navy);">Mohon periksa kembali detail reservasi Anda:</p>
+
+                <div class="flex flex-col gap-2 text-sm p-4 rounded-xl"
+                    style="background:var(--cream);color:var(--navy);">
+                    <div><strong>Ruangan:</strong> <span id="confirm-ruangan"></span></div>
+                    <div><strong>Judul:</strong> <span id="confirm-judul"></span></div>
+                    <div><strong>Waktu:</strong> <span id="confirm-waktu"></span></div>
+                    <div><strong>Nama:</strong> <span id="confirm-nama"></span></div>
+                </div>
+            </div>
+
+            <div class="px-6 py-4 flex justify-end gap-3 border-t"
+                style="background:var(--cream);border-color:var(--cream-dark);">
+                <button type="button" onclick="tutupModalKonfirmasi()"
+                    class="px-5 py-2 rounded-lg text-sm font-semibold"
+                    style="background:transparent;color:var(--navy);border:1px solid var(--cream-dark);">
+                    Batal
+                </button>
+                <button type="button" id="btn-konfirmasi-submit" class="px-5 py-2 rounded-lg text-sm font-semibold"
+                    style="background-color:var(--navy);color:#ffffff;">
+                    Ya, Ajukan
+                </button>
+            </div>
+        </div>
+    </div>
 
     @push('scripts')
         <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
@@ -219,6 +277,45 @@
                     },
                 });
                 calendar.render();
+            });
+        </script>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const btnBuka = document.getElementById('btn-buka-konfirmasi');
+                const form = document.getElementById('form-reservasi-ruangan');
+                const modal = document.getElementById('confirm-reservation-modal');
+
+                if (!btnBuka || !form || !modal) return;
+
+                btnBuka.addEventListener('click', function() {
+                    if (!form.reportValidity()) return; // validasi HTML5 native tetap jalan dulu
+
+                    const roomSelect = form.querySelector('[name="room_id"]');
+                    const roomLabel = roomSelect.options[roomSelect.selectedIndex]?.text ?? '-';
+
+                    document.getElementById('confirm-ruangan').textContent = roomLabel;
+                    document.getElementById('confirm-judul').textContent = form.querySelector('[name="title"]')
+                        .value;
+                    document.getElementById('confirm-nama').textContent = form.querySelector(
+                        '[name="guest_name"]').value;
+
+                    const start = form.querySelector('[name="start_datetime"]').value;
+                    const end = form.querySelector('[name="end_datetime"]').value;
+                    document.getElementById('confirm-waktu').textContent = `${start} s/d ${end}`;
+
+                    modal.classList.add('modal-open');
+                    document.body.style.overflow = 'hidden';
+                });
+
+                document.getElementById('btn-konfirmasi-submit').addEventListener('click', function() {
+                    form.submit();
+                });
+
+                window.tutupModalKonfirmasi = function() {
+                    modal.classList.remove('modal-open');
+                    document.body.style.overflow = '';
+                };
             });
         </script>
     @endpush

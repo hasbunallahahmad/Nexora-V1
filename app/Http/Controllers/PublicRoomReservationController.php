@@ -75,8 +75,10 @@ class PublicRoomReservationController extends Controller
         $data = $request->validated();
 
         try {
+            $room = Room::findOrFail((int) $data['room_id']);
+
             $reservation = $this->reservations->createDraft(new CreateRoomReservationData(
-                roomId: (int) $data['room_id'],
+                roomId: $room->id,
                 agendaId: null,
                 requestedBy: null,
                 title: $data['title'],
@@ -90,10 +92,12 @@ class PublicRoomReservationController extends Controller
 
             $this->reservations->submit($reservation->id);
 
-            return back()->with(
-                'reservation_success',
-                'Reservasi berhasil diajukan. Silahkan Konfirmasi Via WhatsApp info lebih lanjut (https://wa.me/+6281222233860).'
-            );
+            return back()->with('reservation_success', [
+                'message'      => 'Reservasi berhasil diajukan. Admin dinas akan menghubungi Anda via WhatsApp untuk konfirmasi.',
+                'guest_name'   => $data['guest_name'],
+                'room_name'    => $room->name,
+                'start_format' => Carbon::parse($data['start_datetime'])->translatedFormat('l, d F Y H:i'),
+            ]);
         } catch (ReservationConflictException | RoomNotReservableException $e) {
             return back()->withErrors(['conflict' => $e->getMessage()])->withInput();
         }
